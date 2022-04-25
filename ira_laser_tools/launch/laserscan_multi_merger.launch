@@ -1,0 +1,15 @@
+<launch>
+        <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+        	<param name="destination_frame" value="laser_mulit"/>         <!-- 合并扫描所引用的帧 -->
+		<param name="cloud_destination_topic" value="/merged_cloud"/> <!-- 发布合并扫描的主,作为点云，对调试很有用 -->
+		<param name="scan_destination_topic" value="/scan_multi"/>    <!-- 发布合并扫描的主题,作为激光信息。 -->
+                <param name="laserscan_topics" value="/laser_l  /laser_r"/>   <!-- 要订阅的激光扫描主题列表 -->
+
+                <param name="angle_min" value="-3.1415926"/>
+                <param name="angle_max" value="3.1415926"/>        <!-- 输出结果范围 -->
+                <param name="angle_increment" value="0.017"/>      <!-- 0.017 -->
+                <param name="scan_time" value="0.001"/>            <!-- 0.01  -->
+                <param name="range_min" value="0.05"/>             <!-- 0.05 -->
+                <param name="range_max" value="25.0"/>          <!-- 30 -->
+	</node>
+</launch>

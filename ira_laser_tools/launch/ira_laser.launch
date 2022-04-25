@@ -1,0 +1,37 @@
+<launch>
+    <!-- 提前启动两个激光雷达，注意需要进行TF变换
+         这里使用乐动06激光雷达数据融合后雷达范围有问题
+         测试镭神、思岚、北洋等激光雷达均可以实现
+     -->
+    <!-- 激光雷达1 -->
+    <node name="LD06_1" pkg="ldlidar_1" type="ldlidar_1" output="screen" >
+        <param name="topic_name" value="laser_l"/>
+        <param name="port_name" value ="/dev/ttyUSB0"/>
+        <param name="frame_id" value="laser_1"/>
+    </node>
+    <!-- 激光雷达2 -->
+    <node name="LD06_2" pkg="ldlidar_2" type="ldlidar_2" output="screen" >
+        <param name="topic_name" value="laser_r"/>
+        <param name="port_name" value ="/dev/ttyUSB1"/>
+        <param name="frame_id" value="laser_2"/>
+    </node>
+    <!--                 static_transform_publisher                                      x y z yaw pitch roll frame_id child_frame_id period_in_ms -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link2laser_link"  args=" 0 0.05 0.0 0.0 0.0 0.0  /base_link /laser_1 10"/>
+    <node pkg="tf" type="static_transform_publisher" name="base_link2laser_link1" args=" 0 -0.05 0.0 0.0 0.0 0.0 /base_link /laser_2 10"/>
+    <!-- 激光雷达数据融合节点 -->
+    <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+        	<param name="destination_frame" value="laser"/>               <!-- 合并扫描所引用的帧 -->
+		    <param name="cloud_destination_topic" value="/merged_cloud"/> <!-- 发布合并扫描的主,作为点云，对调试很有用 -->
+		    <param name="scan_destination_topic" value="/scan"/>          <!-- 发布合并扫描的主题,作为激光信息。 -->
+            <param name="laserscan_topics" value="/laser_l /laser_r"/>    <!-- 要订阅的激光扫描主题列表 -->
+            <param name="angle_min" value="-3.1415926"/>
+            <param name="angle_max" value="3.1415926"/>                  <!-- 输出结果范围 -->
+            <param name="angle_increment" value="0.0138617809862"/>      <!-- 0.017 -->
+            <param name="scan_time" value="0.01"/>            <!-- 0.01  -->
+            <param name="range_min" value="0.05"/>            <!-- 0.05 -->
+            <param name="range_max" value="15.0"/>            <!-- 30 -->
+	</node>
+    <node pkg="tf" type="static_transform_publisher" name="base_link2lasermulit"  args=" 0 0.0 0.0 0.0 0.0 0.0  /base_link /laser 10"/>    
+    <!-- SLAM建图时的RVIZ显示界面   nav-->
+    <node pkg="rviz" type="rviz" name="rviz_l" args="-d $(find ira_laser_tools)/rviz/test_map.rviz"/>
+</launch>

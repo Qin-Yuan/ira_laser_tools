@@ -1,0 +1,6 @@
+<launch>
+    <!-- SLAM建图时的RVIZ显示界面   nav-->
+    <node pkg="rviz" type="rviz" name="rviz_l" args="-d $(find small_car)/rviz/ldlidar.rviz"/>
+    <node pkg="rviz" type="rviz" name="rviz_r" args="-d $(find small_car)/rviz/ldlidar.rviz"/>
+    <!--<node pkg="rviz" type="rviz" name="test_map" args="-d $(find ira_laser_tools)/rviz/test_map.rviz"/>-->
+</launch>
